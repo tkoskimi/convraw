@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
+#include <iomanip>
 
 #include "fileformats.h"
 
@@ -22,14 +24,14 @@ void convraw::writeCSV(char *csv_file, std::vector< std::vector<double> > &sim_p
         std::string ss;
         for (int j=0;j<NVars;j++) {
             if (isComplex) {
-                std::string re = std::to_string(sim_points[i][2*j]);
+                std::string re = convraw::to_string_with_precision(sim_points[i][2*j]);
                 double im_val = sim_points[i][2*j+1];
-                std::string im = std::to_string(im_val);
+                std::string im = convraw::to_string_with_precision(im_val);
                 ss += re;
                 if (im_val>=0) ss += "+";
                 ss += im + "i" + ";";
             } else {
-                std::string re = std::to_string(sim_points[i][j]);
+                std::string re = convraw::to_string_with_precision(sim_points[i][j]);
                 ss += re + ";";
             }
         }
@@ -38,4 +40,11 @@ void convraw::writeCSV(char *csv_file, std::vector< std::vector<double> > &sim_p
     }
 
     csv.close();
+}
+
+std::string convraw::to_string_with_precision(const double a_value, const int n)
+{
+    std::ostringstream out;
+    out << std::setprecision(n) << a_value;
+    return out.str();
 }
